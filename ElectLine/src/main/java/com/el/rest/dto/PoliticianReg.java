@@ -52,6 +52,9 @@ public class PoliticianReg implements Serializable{
 	@Lob
 	private byte[] poltyImg;
 	
+	@Temporal(TemporalType.DATE)
+	private Date poltyDoB;
+	
 	private boolean isActivePolty = false;
 	
     @ManyToOne

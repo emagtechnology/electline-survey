@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.el.rest.dao.PoliticianRegDao;
+import com.el.rest.dao.ResetPassQuesDao;
 import com.el.rest.dto.PoliticianReg;
 import com.el.rest.service.Login;
+import com.el.rest.service.ResetPass;
 
 @RestController
 @RequestMapping(value="/politician")
@@ -24,6 +26,8 @@ public class PoltyController {
 	@Autowired
 	private PoliticianRegDao poltyDao;
 	
+	@Autowired
+	private ResetPassQuesDao resPsQ;
 
 	/*
 	 * get all Politician-Registration data from DB. 
@@ -90,5 +94,29 @@ public class PoltyController {
 		}
 		else
 			return "{\"Login\":\"Fail check email or pass\",\"status\":4004}";
+	}
+	
+	@RequestMapping(value="/reset-pass", method=RequestMethod.POST, consumes = "application/json")
+	public String getLogin(@RequestBody ResetPass poltyReg) {
+
+		if(poltyDao.existsByPoltyEmail(poltyReg.getEmail())) {
+			PoliticianReg polReg = new PoliticianReg();
+			polReg = poltyDao.findByPoltyEmail(poltyReg.getEmail());
+			PasswordEncoder answ = bCryptPasswordEncoder;
+			if(poltyDao.existsByPoltyEmailAndResetQuesAndPoltyDoB(poltyReg.getEmail(), resPsQ.findById(poltyReg.getResetPassId()).get(), poltyReg.getPoltyDoB())) {
+				if(answ.matches(poltyReg.getAnswer(), polReg.getResetAnswer()))
+				{
+					polReg.setResetAnswer(bCryptPasswordEncoder.encode(polReg.getResetAnswer()));
+					poltyDao.save(polReg);
+					return "{\"Reset Pass\":\"Success\",\"status\":3004}";
+				}
+				else
+					return "{\"Reset Pass\":\"Fail check security Question\",\"status\":4004}";
+			}
+			else
+				return "{\"Reset Pass\":\"Fail check email or Dob\",\"status\":4004}";
+		}
+		else
+			return "{\"Reset Pass\":\"Fail check email\",\"status\":4004}";
 	}
 }
