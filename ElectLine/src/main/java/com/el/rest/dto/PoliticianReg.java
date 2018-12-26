@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
@@ -59,6 +60,11 @@ public class PoliticianReg implements Serializable{
     
     @ManyToOne
     private VidhanSabhaOfIndia vidhanSabha;
+    
+    @OneToOne
+    private ResetPassQues resetQues;
+    
+    private String resetAnswer;
     
     @JsonIgnore
 	private boolean isPaid = false;

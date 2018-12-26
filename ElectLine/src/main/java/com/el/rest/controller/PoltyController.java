@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,6 +38,18 @@ public class PoltyController {
 	
 	
 	/*
+	 * get Politician-Registration based email id data from DB. 
+	 */	
+	@GetMapping(value="/poltyRegData/email-{email}")
+	public PoliticianReg getPoltyDataByEmail(@PathVariable(name="email") String email)
+	{
+		PoliticianReg data = poltyDao.findByPoltyEmail(email);
+		
+		return data;
+	}
+	
+	
+	/*
 	 * Store Politician-Registration data in DB. 
 	 */	
 	@RequestMapping(value="/poltyRegData", consumes = "application/json", method=RequestMethod.POST)
@@ -48,6 +61,7 @@ public class PoltyController {
 		else {
 			PoliticianReg polReg = new PoliticianReg();
 			poltyReg.setPoltyPass(bCryptPasswordEncoder.encode(poltyReg.getPoltyPass()+""+poltyReg.getPoltyEmail()));
+			poltyReg.setResetAnswer(bCryptPasswordEncoder.encode(poltyReg.getResetAnswer()));
 
 			poltyDao.findByPoltyEmail(poltyReg.getPoltyEmail());
 			polReg = poltyDao.findByPoltyEmail(poltyDao.save(poltyReg).getPoltyEmail());
@@ -68,9 +82,7 @@ public class PoltyController {
 					return "{\"Login\":\"Success\",\"status\":3004}";
 				else
 				{
-					
 						return "{\"Login\":\"You are not a verified user.\",\"status\":400}";
-					
 				}
 			}
 			else
