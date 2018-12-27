@@ -10,4 +10,5 @@ import com.el.rest.survey.SurveyMain;
 public interface SurveyMainImp extends CrudRepository<SurveyMain, Integer> {
 	
 	List<SurveyMain> findAllByAssign(Assignment assign);
+	List<SurveyMain> findTop5ByAssign(Assignment assign);
 }

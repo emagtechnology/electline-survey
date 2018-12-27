@@ -99,7 +99,7 @@ public class RestApiController {
 	 * (email).getAssignID())); return data; }
 	 */
 
-	private List<SurvData> rawData(List<SurveyMain> data) {
+	public List<SurvData> rawData(List<SurveyMain> data) {
 		List<SurvData> dt = new LinkedList<>();
 		for (SurveyMain sm : data) {
 			SurvData sd = new SurvData();
